@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import BlocksContent from "@/components/BlocksContent";
-import ArticleContent from "@/components/ArticleContent";
+import BlocksContent from "@/components/blocks-component";
+import ArticleContent from "@/components/article-component";
 import type { BlocksContent as StrapiBlocks } from "@strapi/blocks-react-renderer";
 
 export const metadata: Metadata = {
