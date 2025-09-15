@@ -2,15 +2,13 @@
 
 This project is a demo of building responsive landing page
 
-
-
 ## Project Architecture Overview
 
 This is a modern full-stack application with a clear separation of concerns:
 
 ### Project Structure
 
-```
+```shell
 landing-page-demo/
 
 ```
@@ -40,13 +38,12 @@ landing-page-demo/
 - **Error Handling**: Centralized error management with boundaries
 - **State Management**: React Server Components with server state
 
+## OpenAPI Documentation (Local Testing Environment)
 
+http://127.0.0.1:1337/documentation/v1.0.0
 
 ## Reference
 
-- Storybook: https://storybook.js.org/ 
+- Storybook: https://storybook.js.org/
 - Grist: https://github.com/gristlabs/grist-core
 - Next.js: https://nextjs.org/docs
-
-
-
