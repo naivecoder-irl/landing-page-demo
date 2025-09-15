@@ -14,7 +14,7 @@
       "name": "Apache 2.0",
       "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
     },
-    "x-generation-date": "2025-09-15T11:45:08.877Z"
+    "x-generation-date": "2025-09-15T16:05:08.756Z"
   },
   "x-strapi-config": {
     "plugins": [
@@ -4600,7 +4600,7 @@
               "description": {
                 "type": "string"
               },
-              "date": {
+              "publishedDate": {
                 "type": "string",
                 "format": "date"
               },
@@ -4739,7 +4739,7 @@
           "description": {
             "type": "string"
           },
-          "date": {
+          "publishedDate": {
             "type": "string",
             "format": "date"
           },
@@ -5505,7 +5505,7 @@
                     "description": {
                       "type": "string"
                     },
-                    "date": {
+                    "publishedDate": {
                       "type": "string",
                       "format": "date"
                     },
@@ -6701,7 +6701,7 @@
                 "description": {
                   "type": "string"
                 },
-                "date": {
+                "publishedDate": {
                   "type": "string",
                   "format": "date"
                 },
@@ -7399,7 +7399,7 @@
                 "description": {
                   "type": "string"
                 },
-                "date": {
+                "publishedDate": {
                   "type": "string",
                   "format": "date"
                 },
