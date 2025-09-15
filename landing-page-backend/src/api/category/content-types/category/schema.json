@@ -18,7 +18,7 @@
     "slug": {
       "type": "uid"
     },
-    "articles": {
+    "insights": {
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::article.article",
