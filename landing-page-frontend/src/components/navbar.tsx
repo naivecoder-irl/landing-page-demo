@@ -10,13 +10,13 @@ import { cn } from "@/lib/utils";
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
-  const navItems = [
+  const navItems: { href: string; label: string }[] = [
     { href: "/", label: "Home" },
     { href: "#insights", label: "Insights" },
   ];
 
   return (
-    <nav className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <nav className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 justify-between">
           {/* Logo */}
@@ -26,22 +26,23 @@ export default function Navbar() {
             </Link>
           </div>
 
-          {/* Desktop Navigation */}
+          {/* Desktop Navigation
+           * when >= md, it becomes a flex row for desktop
+           */}
           <div className="hidden items-center space-x-8 md:flex">
             {navItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="text-foreground/60 transition-colors hover:text-foreground"
+                // className="text-foreground/80 transition-colors hover:text-foreground"
+                className="group relative rounded-md px-3 py-2 text-foreground/90 transition hover:bg-foreground/10 hover:text-foreground"
               >
                 {item.label}
               </Link>
             ))}
           </div>
-
-          {/* Right side buttons */}
+          {/* Right side theme toggle button */}
           <div className="flex items-center space-x-4">
-            {/* <Button className="hidden sm:inline-flex">Sign In</Button> */}
             <ThemeToggle />
             {/* Mobile menu button */}
             <Button
@@ -59,14 +60,16 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* Mobile Navigation */}
+        {/* Mobile Navigation
+         * when >= md, mobile elements are forced hidden
+         */}
         <div className={cn("md:hidden", isOpen ? "block" : "hidden")}>
           <div className="space-y-1 border-t px-2 pt-2 pb-3 sm:px-3">
             {navItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="block px-3 py-2 text-foreground/60 hover:text-foreground"
+                className="block rounded-lg px-3 py-2 text-foreground/80 transition hover:bg-foreground/10 hover:text-foreground"
                 onClick={() => setIsOpen(false)}
               >
                 {item.label}
