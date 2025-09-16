@@ -32,7 +32,7 @@ const footerLinks = [
 export default function Footer() {
   return (
     <footer className="border-t bg-background">
-      <div className="mx-auto max-w-7xl px-4 py-8">
+      <div className="mx-auto max-w-7xl min-w-[360px] px-4 py-8">
         {/* Main Footer Content */}
         <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
           {/* Company Info */}

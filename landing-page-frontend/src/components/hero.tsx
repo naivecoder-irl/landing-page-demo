@@ -53,7 +53,7 @@ export default async function Hero() {
 
   return (
     <section className="py-12">
-      <div className="mx-auto max-w-7xl px-4 md:px-6">
+      <div className="mx-auto max-w-7xl min-w-[360px] px-4 md:px-6">
         <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-2">
           {/* Left Column - Image of Cover */}
           <div className="w-full">
@@ -85,7 +85,7 @@ export default async function Hero() {
 
           {/* Right Column - Lead Form */}
           <div className="w-full">
-            {/* keep it full-width inside its column; add an inner max-w if you want it visually narrower */}
+            {/* keep it full-width inside its column */}
             <LeadForm />
           </div>
         </div>
