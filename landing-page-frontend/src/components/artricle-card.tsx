@@ -1,10 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import qs from "qs";
+//
 
-import { Badge } from "@/components/ui/badge";
-
-const STRAPI_URL =
+const STRAPI_URL:string =
   process.env.NEXT_PUBLIC_STRAPI_URL || "http://127.0.0.1:1337";
 
 type StrapiImageFormat = {
@@ -36,6 +35,7 @@ type StrapiArticleEntity = {
   attributes?: {
     title?: string | null;
     slug?: string | null;
+    documentId?: string | null;
     description?: string | null;
     publishedDate?: string | null;
     cover?: StrapiMedia;
@@ -184,14 +184,16 @@ async function getInsights(): Promise<InsightArticle[]> {
     return {
       id: item.id,
       slug: item.attributes?.slug ?? `${item.id}`,
-      title: item.attributes?.title ?? "Untitled article",
+      title:
+        item.attributes?.title ??
+        "Greg Bruce Health Sservice is transforming its six facilities using intelligent, secure wired and wireless infrastructure",
       description: item.attributes?.description ?? "",
       categoryName:
-        item.attributes?.category?.data?.attributes?.name ?? "Editorial",
+        item.attributes?.category?.data?.attributes?.name ?? "Press Release",
       published,
       cover,
       author: {
-        name: authorAttributes?.name ?? "Unknown author",
+        name: authorAttributes?.name ?? "Sam Plane",
         avatar,
       },
     };
@@ -200,7 +202,8 @@ async function getInsights(): Promise<InsightArticle[]> {
 
 function DesktopInsightCard({ article }: { article: InsightArticle }) {
   return (
-    <article className="hidden gap-6 overflow-hidden rounded-3xl border bg-background shadow-sm transition focus-within:ring-2 focus-within:ring-primary/40 hover:shadow-md md:grid md:grid-cols-[240px_1fr]">
+    <article className="hidden gap-6 overflow-hidden rounded-3xl border bg-background shadow-sm transition focus-within:ring-2 focus-within:ring-primary/40 hover:shadow-md md:grid">
+      {/* Article Cover */}
       <div className="relative border-r bg-muted/40">
         {article.cover ? (
           <Image
@@ -216,48 +219,54 @@ function DesktopInsightCard({ article }: { article: InsightArticle }) {
           </div>
         )}
       </div>
-      <div className="flex flex-col gap-4 p-6">
-        <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
-          {article.categoryName && (
-            <Badge variant="secondary" className="rounded-full px-3 py-1">
-              {article.categoryName}
-            </Badge>
-          )}
-          {article.published.iso ? (
-            <time dateTime={article.published.iso}>
-              {article.published.label}
-            </time>
-          ) : (
-            <span>{article.published.label}</span>
-          )}
+      {/* Author Info: avatar | (name over (published + category)) */}
+      <div className="flex items-center gap-3 p-6 pt-4 text-sm text-muted-foreground">
+        {/* Author Avatar */}
+        {article.author.avatar ? (
+          <Image
+            src={article.author.avatar.url}
+            alt={article.author.avatar.alt || `${article.author.name} avatar`}
+            width={48}
+            height={48}
+            className="h-12 w-12 rounded-full object-cover"
+          />
+        ) : (
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted text-base font-semibold text-muted-foreground">
+            {getInitials(article.author.name)}
+          </div>
+        )}
+        <div className="flex flex-col text-left leading-tight">
+          <span className="font-medium text-foreground">
+            {article.author.name}
+          </span>
+          {/* Article published time */}
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            {article.published.iso ? (
+              <time dateTime={article.published.iso}>
+                {article.published.label}
+              </time>
+            ) : (
+              // <span>{article.published.label}</span>
+              <span>{"Jul 16, 2024"}</span>
+            )}
+            {/* Article category name */}
+            {article.categoryName && (
+              <>
+                <span aria-hidden>|</span>
+                <span>{article.categoryName}</span>
+              </>
+            )}
+          </div>
         </div>
+      </div>
+      {/* Article Details */}
+      <div className="flex flex-col gap-4 p-6">
         <Link
           href={`/articles/${article.slug}`}
           className="text-2xl leading-tight font-semibold text-foreground transition hover:text-primary focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:outline-none"
         >
           {article.title}
         </Link>
-        <div className="mt-auto flex items-center gap-3 pt-4 text-sm text-muted-foreground">
-          {article.author.avatar ? (
-            <Image
-              src={article.author.avatar.url}
-              alt={article.author.avatar.alt || `${article.author.name} avatar`}
-              width={48}
-              height={48}
-              className="h-12 w-12 rounded-full object-cover"
-            />
-          ) : (
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted text-base font-semibold text-muted-foreground">
-              {getInitials(article.author.name)}
-            </div>
-          )}
-          <div className="flex flex-col leading-tight">
-            <span className="font-medium text-foreground">
-              {article.author.name}
-            </span>
-            <span>{article.published.label}</span>
-          </div>
-        </div>
       </div>
     </article>
   );
@@ -267,7 +276,7 @@ function MobileInsightCard({ article }: { article: InsightArticle }) {
   return (
     <Link
       href={`/insights/${article.slug}`}
-      className="flex flex-col overflow-hidden rounded-3xl border bg-background shadow-sm transition hover:shadow-md focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:outline-none md:hidden"
+      className="flex overflow-hidden rounded-3xl border bg-background shadow-sm transition hover:shadow-md focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:outline-none md:hidden"
     >
       <div className="relative aspect-video bg-muted/40">
         {article.cover ? (
@@ -286,7 +295,7 @@ function MobileInsightCard({ article }: { article: InsightArticle }) {
       </div>
       <div className="flex flex-col gap-3 p-5">
         <div className="flex items-center gap-2 text-xs tracking-wide text-muted-foreground uppercase">
-          {article.categoryName && (
+          {/* {article.categoryName && (
             <span className="font-semibold text-primary">
               {article.categoryName}
             </span>
@@ -297,33 +306,29 @@ function MobileInsightCard({ article }: { article: InsightArticle }) {
             </time>
           ) : (
             <span>{article.published.label}</span>
-          )}
+          )} */}
         </div>
         <h3 className="text-lg leading-snug font-semibold text-foreground">
           {article.title}
         </h3>
-        {article.description && (
-          <p className="text-sm text-muted-foreground">{article.description}</p>
-        )}
+
         <div className="mt-2 flex items-center gap-3 text-sm text-muted-foreground">
-          {article.author.avatar ? (
-            <Image
-              src={article.author.avatar.url}
-              alt={article.author.avatar.alt || `${article.author.name} avatar`}
-              width={40}
-              height={40}
-              className="h-10 w-10 rounded-full object-cover"
-            />
-          ) : (
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted text-xs font-semibold text-muted-foreground">
-              {getInitials(article.author.name)}
-            </div>
-          )}
           <div className="flex flex-col leading-tight">
             <span className="font-medium text-foreground">
-              {article.author.name}
+              by {article.author.name}
             </span>
-            <span>{article.published.label}</span>
+            <span>
+              {
+                "HPE GreenLake cloud delivers managed infrastructure solutions across hybrid cloud, enhancing market agility and online trading platform performance for Australian investors"
+              }
+            </span>
+            {/** TODO fix article description display */}
+            {article.description && (
+              <div>
+                <span>{article.description}</span>
+              </div>
+            )}
+            <span className="font-medium text-foreground">{"Learn more"}</span>
           </div>
         </div>
       </div>
@@ -346,13 +351,13 @@ export default async function InsightCards() {
 
   return (
     <section id="insights" className="px-4 py-24">
-      <div className="mx-auto flex max-w-5xl flex-col gap-10">
-        <div>
-          <h2 className="hidden text-3xl font-semibold tracking-tight md:block md:text-4xl">
+      <div className="mx-auto max-w-7xl">
+        <div className="mb-10">
+          <h2 className="hidden text-3xl tracking-tight md:block md:text-4xl">
             More Insights
           </h2>
         </div>
-        <div className="flex flex-col gap-8">
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {articles.map((article) => (
             <div key={article.id} className="w-full">
               <DesktopInsightCard article={article} />
