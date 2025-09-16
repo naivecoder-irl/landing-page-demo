@@ -78,23 +78,6 @@ export default async function Hero() {
         </div>
         {/* Right Column - Content */}
         <LeadForm />
-        {/* <div className="space-y-8">
-          <div className="space-y-4">
-            <h1 className="text-4xl font-bold tracking-tight md:text-6xl">
-              <span className="text-primary">Landing Pages</span>
-            </h1>
-            <p className="max-w-lg text-xl text-muted-foreground">
-              Responsive landing pages with shadcn/ui
-            </p>
-          </div>
-
-          <div className="flex flex-col gap-4 sm:flex-row">
-            <Button size="lg" className="text-base">
-              Get Started
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          </div>
-        </div>  */}
       </div>
     </section>
   );

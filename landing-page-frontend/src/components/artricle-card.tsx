@@ -51,6 +51,7 @@ type ImageResource = {
 
 type InsightArticle = {
   id: number;
+  documentId: string;
   slug: string;
   title: string;
   description: string;
@@ -124,7 +125,7 @@ function getInitials(name: string) {
 async function getInsights(): Promise<InsightArticle[]> {
   const query = qs.stringify(
     {
-      fields: ["title", "slug", "description", "publishedDate"],
+      fields: ["title", "slug", "description", "publishedDate", "documentId"],
       sort: ["publishedDate:desc"],
       populate: {
         cover: {
@@ -176,11 +177,12 @@ async function getInsights(): Promise<InsightArticle[]> {
 
     return {
       id: item.id,
+      documentId: item.documentId ?? item.slug ?? `${item.id}`,
       slug: item.slug ?? `${item.id}`,
       title: item.title ?? "Title Not Found",
       description: item.description ?? "",
       categoryName: item.category?.name ?? "Press Release",
-      published,
+      published, // record published date string
       cover,
       author: {
         name: author?.name ?? "Sam Plane",
@@ -221,6 +223,7 @@ function DesktopInsightCard({ article }: { article: InsightArticle }) {
               className="h-12 w-12 rounded-full object-cover"
             />
           ) : (
+            /** without setting an avatar in Strapi */
             <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted text-base font-semibold text-muted-foreground">
               {getInitials(article.author.name)}
             </div>
@@ -236,7 +239,7 @@ function DesktopInsightCard({ article }: { article: InsightArticle }) {
                   {article.published.label}
                 </time>
               ) : (
-                // <span>{article.published.label}</span>
+                /** date place holder */
                 <span>{"Jul 16, 2099"}</span>
               )}
               {/* Article category name */}
@@ -249,9 +252,9 @@ function DesktopInsightCard({ article }: { article: InsightArticle }) {
             </div>
           </div>
         </div>
-        {/* Article Details (title & Link) */}
+        {/* Article Details (title & clickable Link) */}
         <Link
-          href={`/articles/${article.slug}`}
+          href={`/insights/${article.documentId}`}
           target="_blank"
           rel="noopener noreferrer"
           className="text-2xl leading-tight font-semibold text-foreground transition hover:text-primary focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:outline-none"
@@ -266,7 +269,7 @@ function DesktopInsightCard({ article }: { article: InsightArticle }) {
 function MobileInsightCard({ article }: { article: InsightArticle }) {
   return (
     <Link
-      href={`/insights/${article.slug}`}
+      href={`/insights/${article.documentId}`}
       target="_blank"
       rel="noopener noreferrer"
       className="flex overflow-hidden rounded-3xl border bg-background shadow-sm transition hover:shadow-md focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:outline-none md:hidden"
@@ -288,7 +291,7 @@ function MobileInsightCard({ article }: { article: InsightArticle }) {
       </div>
       <div className="flex flex-[2] flex-col gap-3 p-5">
         <div className="flex items-center gap-2 text-xs tracking-wide text-muted-foreground uppercase"></div>
-        <h3 className="text-lg leading-snug font-semibold text-foreground">
+        <h3 className="text-xl leading-snug font-semibold text-foreground">
           {article.title}
         </h3>
         {/* font block */}
