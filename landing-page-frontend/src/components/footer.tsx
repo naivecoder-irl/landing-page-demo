@@ -91,7 +91,7 @@ export default function Footer() {
         {/* Bottom Footer */}
         <div className="flex flex-col items-center justify-between md:flex-row">
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} Landing Page Inc. All rights reserved.
+            © {new Date().getFullYear()} Landing Inc. All rights reserved.
           </p>
         </div>
       </div>

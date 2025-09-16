@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 const STRAPI_URL =
   process.env.NEXT_PUBLIC_STRAPI_URL || "http://127.0.0.1:1337";
 
+// TODO refine type denifition for this method
 async function getCover() {
   try {
     const res = await fetch(`${STRAPI_URL}/api/cover?populate=image`, {

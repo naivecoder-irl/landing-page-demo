@@ -14,7 +14,8 @@ export interface Article {
 }
 
 // Define Strapi URL
-const STRAPI_URL = "http://127.0.0.1:1337";
+const STRAPI_URL =
+  process.env.NEXT_PUBLIC_STRAPI_URL || "http://127.0.0.1:1337";
 
 export default function ArticleContent() {
   // Define articles state
@@ -44,17 +45,19 @@ export default function ArticleContent() {
 
   return (
     <div className="p-6">
-      <h1 className="text-4xl font-bold mb-8">Next.js and Strapi Integration</h1>
+      <h1 className="mb-8 text-4xl font-bold">
+        Next.js and Strapi Integration
+      </h1>
       <div>
-        <h2 className="text-2xl font-semibold mb-6">Articles</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <h2 className="mb-6 text-2xl font-semibold">Articles</h2>
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {articles.map((article) => (
             <article
               key={article.id}
-              className="bg-white shadow-md rounded-lg overflow-hidden"
+              className="overflow-hidden rounded-lg bg-white shadow-md"
             >
               <Image
-                className="w-full h-48 object-cover"
+                className="h-48 w-full object-cover"
                 src={STRAPI_URL + article.cover.url}
                 alt={article.title}
                 width={180}
@@ -62,8 +65,8 @@ export default function ArticleContent() {
                 priority
               />
               <div className="p-4">
-                <h3 className="text-lg font-bold mb-2">{article.title}</h3>
-                <p className="text-gray-600 mb-4">{article.content}</p>
+                <h3 className="mb-2 text-lg font-bold">{article.title}</h3>
+                <p className="mb-4 text-gray-600">{article.content}</p>
                 <p className="text-sm text-gray-500">
                   Published: {formatDate(article.publishedDate)}
                 </p>
