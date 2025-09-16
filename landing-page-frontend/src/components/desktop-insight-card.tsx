@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import type { InsightArticle } from "@/types/insights";
+import type { InsightPreview } from "@/types/insights";
 
 function getInitials(name: string) {
   const initials = name
@@ -16,15 +16,15 @@ function getInitials(name: string) {
 export default function DesktopInsightCard({
   article,
 }: {
-  article: InsightArticle;
+  article: InsightPreview;
 }) {
   return (
     <article className="hidden overflow-hidden rounded-3xl border bg-background shadow-sm transition focus-within:ring-2 focus-within:ring-primary/40 hover:shadow-md md:grid md:grid-rows-2">
       <div className="relative min-h-[220px] border-r bg-muted/40">
-        {article.cover ? (
+        {article.coverImage ? (
           <Image
-            src={article.cover.url}
-            alt={article.cover.alt || article.title}
+            src={article.coverImage.url}
+            alt={article.coverImage.alt || article.title}
             fill
             sizes="(min-width: 768px) 50vw"
             className="object-cover"
@@ -37,10 +37,13 @@ export default function DesktopInsightCard({
       </div>
       <div className="flex flex-col gap-6 p-6">
         <div className="flex items-center gap-3 text-sm text-muted-foreground">
-          {article.author.avatar ? (
+          {article.author.avatarImage ? (
             <Image
-              src={article.author.avatar.url}
-              alt={article.author.avatar.alt || `${article.author.name} avatar`}
+              src={article.author.avatarImage.url}
+              alt={
+                article.author.avatarImage.alt ||
+                `${article.author.name} avatar`
+              }
               width={48}
               height={48}
               className="h-12 w-12 rounded-full object-cover"
@@ -55,9 +58,9 @@ export default function DesktopInsightCard({
               {article.author.name}
             </span>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              {article.published.iso ? (
-                <time dateTime={article.published.iso}>
-                  {article.published.label}
+              {article.publishedAt.iso ? (
+                <time dateTime={article.publishedAt.iso}>
+                  {article.publishedAt.label}
                 </time>
               ) : (
                 <span>{"Jul 16, 2099"}</span>

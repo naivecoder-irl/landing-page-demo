@@ -1,20 +1,20 @@
-export type StrapiImageFormat = {
+export interface StrapiImageVariant extends Record<string, unknown> {
   url: string;
   width?: number;
   height?: number;
-} & Record<string, unknown>;
+}
 
-export type StrapiMedia =
-  | ({
-      url: string;
-      width?: number;
-      height?: number;
-      alternativeText?: string | null;
-      formats?: Record<string, StrapiImageFormat>;
-    } & Record<string, unknown>)
-  | null;
+export interface StrapiMediaAsset extends Record<string, unknown> {
+  url: string;
+  width?: number;
+  height?: number;
+  alternativeText?: string | null;
+  formats?: Record<string, StrapiImageVariant>;
+}
 
-export type StrapiArticleEntity = {
+export type StrapiMedia = StrapiMediaAsset | null;
+
+export interface StrapiArticle extends Record<string, unknown> {
   id: number;
   documentId?: string | null;
   title?: string | null;
@@ -29,33 +29,33 @@ export type StrapiArticleEntity = {
         avatar?: StrapiMedia;
       } & Record<string, unknown>)
     | null;
-};
+}
 
-export type StrapiArticleResponse = {
-  data?: StrapiArticleEntity[];
-};
+export interface StrapiArticlesResponse {
+  data?: StrapiArticle[];
+}
 
-export type ImageResource = {
+export interface InsightImage {
   url: string;
   width: number;
   height: number;
   alt: string;
-};
+}
 
-export type InsightArticle = {
+export interface InsightPreview {
   id: number;
   documentId: string;
   slug: string;
   title: string;
   description: string;
   categoryName: string;
-  published: {
+  publishedAt: {
     label: string;
     iso?: string;
   };
-  cover: ImageResource | null;
+  coverImage: InsightImage | null;
   author: {
     name: string;
-    avatar: ImageResource | null;
+    avatarImage: InsightImage | null;
   };
-};
+}

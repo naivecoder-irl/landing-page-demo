@@ -1,12 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import type { InsightArticle } from "@/types/insights";
+import type { InsightPreview } from "@/types/insights";
 
 export default function MobileInsightCard({
   article,
 }: {
-  article: InsightArticle;
+  article: InsightPreview;
 }) {
   return (
     <Link
@@ -16,10 +16,10 @@ export default function MobileInsightCard({
       className="flex overflow-hidden rounded-3xl border bg-background shadow-sm transition hover:shadow-md focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:outline-none md:hidden"
     >
       <div className="relative aspect-square min-h-[150px] flex-1 bg-muted/40">
-        {article.cover ? (
+        {article.coverImage ? (
           <Image
-            src={article.cover.url}
-            alt={article.cover.alt || article.title}
+            src={article.coverImage.url}
+            alt={article.coverImage.alt || article.title}
             fill
             sizes="50vw"
             className="object-cover"

@@ -1,8 +1,8 @@
 import qs from "qs";
 import type {
-  ImageResource,
-  InsightArticle,
-  StrapiArticleResponse,
+  InsightImage,
+  InsightPreview,
+  StrapiArticlesResponse,
   StrapiMedia,
 } from "@/types/insights";
 
@@ -15,7 +15,7 @@ const STRAPI_URL: string =
 function resolveMedia(
   media: StrapiMedia | undefined,
   preferredFormats: string[] = ["large", "medium", "small", "thumbnail"],
-): ImageResource | null {
+): InsightImage | null {
   if (!media?.url) {
     return null;
   }
@@ -37,7 +37,7 @@ function resolveMedia(
   };
 }
 
-function formatPublishedDate(date: string | null | undefined) {
+function formatPublishedAt(date: string | null | undefined) {
   if (!date) {
     return { label: "Date TBA" };
   }
@@ -57,7 +57,7 @@ function formatPublishedDate(date: string | null | undefined) {
   };
 }
 
-async function getInsights(): Promise<InsightArticle[]> {
+async function getInsights(): Promise<InsightPreview[]> {
   const query = qs.stringify(
     {
       fields: ["title", "slug", "description", "publishedDate", "documentId"],
@@ -95,20 +95,20 @@ async function getInsights(): Promise<InsightArticle[]> {
     return [];
   }
 
-  const json = (await res.json()) as StrapiArticleResponse;
+  const json = (await res.json()) as StrapiArticlesResponse;
 
   // TODO delete after debugging
   console.log(json);
 
   return (json.data ?? []).map((item) => {
-    const cover = resolveMedia(item.cover);
+    const coverImage = resolveMedia(item.cover);
     const author = item.author ?? null;
-    const avatar = resolveMedia(author?.avatar, [
+    const avatarImage = resolveMedia(author?.avatar, [
       "thumbnail",
       "small",
       "medium",
     ]);
-    const published = formatPublishedDate(item.publishedDate ?? null);
+    const publishedAt = formatPublishedAt(item.publishedDate ?? null);
 
     return {
       id: item.id,
@@ -117,11 +117,11 @@ async function getInsights(): Promise<InsightArticle[]> {
       title: item.title ?? "Title Not Found",
       description: item.description ?? "",
       categoryName: item.category?.name ?? "Press Release",
-      published, // record published date string
-      cover,
+      publishedAt,
+      coverImage,
       author: {
         name: author?.name ?? "Sam Plane",
-        avatar,
+        avatarImage,
       },
     };
   });
