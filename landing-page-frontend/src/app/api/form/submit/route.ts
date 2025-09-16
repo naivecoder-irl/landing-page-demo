@@ -1,4 +1,3 @@
-// app/api/form/submit/route.ts
 import { gristAddLead } from '@/lib/grist';
 
 export async function POST(req: Request) {

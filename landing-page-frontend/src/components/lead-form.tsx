@@ -24,7 +24,7 @@ const FormSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address." }),
   phone: z
     .string()
-    .max(30, { message: "Phone number is too long." })
+    .max(20, { message: "Phone number is too long." })
     .optional()
     .or(z.literal("")),
 });
@@ -72,92 +72,91 @@ export default function LeadForm() {
   return (
     <div className="space-y-6">
       <div className="space-y-2">
-        <h2 className="text-3xl font-semibold tracking-tight">Get in touch</h2>
-        <p className="text-muted-foreground">
-          Leave your contact, we will reach out.
-        </p>
-      </div>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+            <FormField
+              control={form.control}
+              name="fullName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Full Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Jane Doe" {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    Your legal or preferred full name.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
-          <FormField
-            control={form.control}
-            name="fullName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Full Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="Jane Doe" {...field} />
-                </FormControl>
-                <FormDescription>
-                  Your legal or preferred full name.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email Address</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="email"
+                      placeholder="jane@example.com"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    We will only use it to contact you.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email Address</FormLabel>
-                <FormControl>
-                  <Input
-                    type="email"
-                    placeholder="jane@example.com"
-                    {...field}
-                  />
-                </FormControl>
-                <FormDescription>
-                  We will only use it to contact you.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+            <FormField
+              control={form.control}
+              name="phone"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Phone Number</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="tel"
+                      placeholder="+353 XX XXX XXXX"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription>Optional.</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <FormField
-            control={form.control}
-            name="phone"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Phone Number</FormLabel>
-                <FormControl>
-                  <Input type="tel" placeholder="+353 85 204 8444" {...field} />
-                </FormControl>
-                <FormDescription>Optional.</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <Button
-            type="submit"
-            size="lg"
-            className="text-base"
-            disabled={submitting}
-          >
-            {submitting ? "Submitting…" : "Submit"}
-          </Button>
-
-          {status !== "idle" && (
-            <p
-              className={`text-sm ${
-                status === "ok"
-                  ? "text-green-600"
-                  : status === "error"
-                    ? "text-red-600"
-                    : ""
-              }`}
-              aria-live="polite"
+            <Button
+              type="submit"
+              size="lg"
+              className="text-base"
+              disabled={submitting}
             >
-              {msg}
-            </p>
-          )}
-        </form>
-      </Form>
+              {submitting ? "Submitting…" : "Submit"}
+            </Button>
+
+            {status !== "idle" && (
+              <p
+                className={`text-sm ${
+                  status === "ok"
+                    ? "text-green-600"
+                    : status === "error"
+                      ? "text-red-600"
+                      : ""
+                }`}
+                aria-live="polite"
+              >
+                {msg}
+              </p>
+            )}
+          </form>
+        </Form>
+      </div>
     </div>
   );
 }

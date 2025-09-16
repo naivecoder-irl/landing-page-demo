@@ -177,9 +177,7 @@ async function getInsights(): Promise<InsightArticle[]> {
     return {
       id: item.id,
       slug: item.slug ?? `${item.id}`,
-      title:
-        item.title ??
-        "Greg Bruce Health Sservice is transforming its six facilities using intelligent, secure wired and wireless infrastructure",
+      title: item.title ?? "Title Not Found",
       description: item.description ?? "",
       categoryName: item.category?.name ?? "Press Release",
       published,
@@ -239,7 +237,7 @@ function DesktopInsightCard({ article }: { article: InsightArticle }) {
                 </time>
               ) : (
                 // <span>{article.published.label}</span>
-                <span>{"Jul 16, 2024"}</span>
+                <span>{"Jul 16, 2099"}</span>
               )}
               {/* Article category name */}
               {article.categoryName && (
@@ -254,6 +252,8 @@ function DesktopInsightCard({ article }: { article: InsightArticle }) {
         {/* Article Details (title & Link) */}
         <Link
           href={`/articles/${article.slug}`}
+          target="_blank"
+          rel="noopener noreferrer"
           className="text-2xl leading-tight font-semibold text-foreground transition hover:text-primary focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:outline-none"
         >
           {article.title}
@@ -267,6 +267,8 @@ function MobileInsightCard({ article }: { article: InsightArticle }) {
   return (
     <Link
       href={`/insights/${article.slug}`}
+      target="_blank"
+      rel="noopener noreferrer"
       className="flex overflow-hidden rounded-3xl border bg-background shadow-sm transition hover:shadow-md focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:outline-none md:hidden"
     >
       <div className="relative aspect-square min-h-[150px] flex-1 bg-muted/40">
@@ -285,42 +287,26 @@ function MobileInsightCard({ article }: { article: InsightArticle }) {
         )}
       </div>
       <div className="flex flex-[2] flex-col gap-3 p-5">
-        <div className="flex items-center gap-2 text-xs tracking-wide text-muted-foreground uppercase">
-          {/* {article.categoryName && (
-            <span className="font-semibold text-primary">
-              {article.categoryName}
-            </span>
-          )}
-          {article.published.iso ? (
-            <time dateTime={article.published.iso}>
-              {article.published.label}
-            </time>
-          ) : (
-            <span>{article.published.label}</span>
-          )} */}
-        </div>
+        <div className="flex items-center gap-2 text-xs tracking-wide text-muted-foreground uppercase"></div>
         <h3 className="text-lg leading-snug font-semibold text-foreground">
           {article.title}
         </h3>
+        {/* font block */}
+        <div className="mb-1 space-y-1">
+          {/* by author：smaller font and grey color */}
+          <span className="block text-xs text-muted-foreground">
+            by {article.author.name}
+          </span>
 
-        <div className="mt-2 flex items-center gap-3 text-sm text-muted-foreground">
-          <div className="flex flex-col leading-tight">
-            <span className="font-medium text-foreground">
-              by {article.author.name}
-            </span>
-            <span>
-              {
-                "HPE GreenLake cloud delivers managed infrastructure solutions across hybrid cloud, enhancing market agility and online trading platform performance for Australian investors"
-              }
-            </span>
-            {/** TODO fix article description display */}
-            {article.description && (
-              <div>
-                <span>{article.description}</span>
-              </div>
-            )}
-            <span className="font-medium text-foreground">{"Learn more"}</span>
-          </div>
+          {/* 描述：前景色（黑/深色） */}
+          {article.description && (
+            <p className="text-sm text-foreground">{article.description}</p>
+          )}
+
+          {/* Learn more indicator */}
+          <span className="inline-flex items-center gap-1 text-sm underline underline-offset-4 hover:decoration-2">
+            Learn more
+          </span>
         </div>
       </div>
     </Link>
