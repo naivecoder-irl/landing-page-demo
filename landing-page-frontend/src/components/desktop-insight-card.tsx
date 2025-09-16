@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import type { InsightArticle } from "./insight-card";
+import type { InsightArticle } from "@/types/insights";
 
 function getInitials(name: string) {
   const initials = name

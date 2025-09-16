@@ -1,71 +1,16 @@
 import qs from "qs";
+import type {
+  ImageResource,
+  InsightArticle,
+  StrapiArticleResponse,
+  StrapiMedia,
+} from "@/types/insights";
+
 import DesktopInsightCard from "./desktop-insight-card";
 import MobileInsightCard from "./mobile-insight-card";
 
 const STRAPI_URL: string =
   process.env.NEXT_PUBLIC_STRAPI_URL || "http://127.0.0.1:1337";
-
-type StrapiImageFormat = {
-  url: string;
-  width?: number;
-  height?: number;
-} & Record<string, unknown>;
-
-type StrapiMedia =
-  | ({
-      url: string;
-      width?: number;
-      height?: number;
-      alternativeText?: string | null;
-      formats?: Record<string, StrapiImageFormat>;
-    } & Record<string, unknown>)
-  | null;
-
-type StrapiArticleEntity = {
-  id: number;
-  documentId?: string | null;
-  title?: string | null;
-  slug?: string | null;
-  description?: string | null;
-  publishedDate?: string | null;
-  cover?: StrapiMedia;
-  category?: ({ name?: string | null } & Record<string, unknown>) | null;
-  author?:
-    | ({
-        name?: string | null;
-        avatar?: StrapiMedia;
-      } & Record<string, unknown>)
-    | null;
-};
-
-type StrapiArticleResponse = {
-  data?: StrapiArticleEntity[];
-};
-
-type ImageResource = {
-  url: string;
-  width: number;
-  height: number;
-  alt: string;
-};
-
-export type InsightArticle = {
-  id: number;
-  documentId: string;
-  slug: string;
-  title: string;
-  description: string;
-  categoryName: string;
-  published: {
-    label: string;
-    iso?: string;
-  };
-  cover: ImageResource | null;
-  author: {
-    name: string;
-    avatar: ImageResource | null;
-  };
-};
 
 function resolveMedia(
   media: StrapiMedia | undefined,
