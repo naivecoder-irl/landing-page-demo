@@ -5,45 +5,39 @@ import qs from "qs";
 const STRAPI_URL: string =
   process.env.NEXT_PUBLIC_STRAPI_URL || "http://127.0.0.1:1337";
 
-type StrapiImageFormat = {
-  url: string;
-  width: number;
-  height: number;
-};
+type StrapiImageFormat = (
+  {
+    url: string;
+    width?: number;
+    height?: number;
+  } & Record<string, unknown>
+);
 
-type StrapiMedia = {
-  data: {
-    attributes: {
+type StrapiMedia =
+  | ({
       url: string;
       width?: number;
       height?: number;
       alternativeText?: string | null;
       formats?: Record<string, StrapiImageFormat>;
-    };
-  } | null;
-} | null;
-
-type StrapiRelation<TAttributes> = {
-  data: {
-    attributes: TAttributes;
-  } | null;
-} | null;
+    } & Record<string, unknown>)
+  | null;
 
 type StrapiArticleEntity = {
   id: number;
-  attributes?: {
-    title?: string | null;
-    slug?: string | null;
-    documentId?: string | null;
-    description?: string | null;
-    publishedDate?: string | null;
-    cover?: StrapiMedia;
-    category?: StrapiRelation<{ name?: string | null }>;
-    author?: StrapiRelation<{
-      name?: string | null;
-      avatar?: StrapiMedia;
-    }>;
-  };
+  documentId?: string | null;
+  title?: string | null;
+  slug?: string | null;
+  description?: string | null;
+  publishedDate?: string | null;
+  cover?: StrapiMedia;
+  category?: ({ name?: string | null } & Record<string, unknown>) | null;
+  author?:
+    | ({
+        name?: string | null;
+        avatar?: StrapiMedia;
+      } & Record<string, unknown>)
+    | null;
 };
 
 type StrapiArticleResponse = {
@@ -78,17 +72,17 @@ function resolveMedia(
   media: StrapiMedia | undefined,
   preferredFormats: string[] = ["large", "medium", "small", "thumbnail"],
 ): ImageResource | null {
-  const attributes = media?.data?.attributes;
-  if (!attributes?.url) {
+  if (!media?.url) {
     return null;
   }
 
-  const formatKey = preferredFormats.find((key) => attributes.formats?.[key]);
-  const format = formatKey ? attributes.formats?.[formatKey] : undefined;
-  const url = format?.url ?? attributes.url;
-  const width = format?.width ?? attributes.width ?? 800;
-  const height = format?.height ?? attributes.height ?? 600;
-  const alt = attributes.alternativeText ?? "";
+  const formats = media.formats ?? {};
+  const formatKey = preferredFormats.find((key) => formats[key]);
+  const format = formatKey ? formats[formatKey] : undefined;
+  const url = format?.url ?? media.url;
+  const width = format?.width ?? media.width ?? 800;
+  const height = format?.height ?? media.height ?? 600;
+  const alt = typeof media.alternativeText === "string" ? media.alternativeText : "";
 
   return {
     url: url.startsWith("http") ? url : `${STRAPI_URL}${url}`,
@@ -167,33 +161,28 @@ async function getInsights(): Promise<InsightArticle[]> {
   }
 
   const json = (await res.json()) as StrapiArticleResponse;
-  // TODO delete after debugging
-  console.log(JSON.stringify(json));
   return (json.data ?? []).map((item) => {
-    const cover = resolveMedia(item.attributes?.cover);
-    const authorAttributes = item.attributes?.author?.data?.attributes;
-    const avatar = resolveMedia(authorAttributes?.avatar, [
+    const cover = resolveMedia(item.cover);
+    const author = item.author ?? null;
+    const avatar = resolveMedia(author?.avatar, [
       "thumbnail",
       "small",
       "medium",
     ]);
-    const published = formatPublishedDate(
-      item.attributes?.publishedDate ?? null,
-    );
+    const published = formatPublishedDate(item.publishedDate ?? null);
 
     return {
       id: item.id,
-      slug: item.attributes?.slug ?? `${item.id}`,
+      slug: item.slug ?? `${item.id}`,
       title:
-        item.attributes?.title ??
+        item.title ??
         "Greg Bruce Health Sservice is transforming its six facilities using intelligent, secure wired and wireless infrastructure",
-      description: item.attributes?.description ?? "",
-      categoryName:
-        item.attributes?.category?.data?.attributes?.name ?? "Press Release",
+      description: item.description ?? "",
+      categoryName: item.category?.name ?? "Press Release",
       published,
       cover,
       author: {
-        name: authorAttributes?.name ?? "Sam Plane",
+        name: author?.name ?? "Sam Plane",
         avatar,
       },
     };
@@ -277,7 +266,7 @@ function MobileInsightCard({ article }: { article: InsightArticle }) {
       href={`/insights/${article.slug}`}
       className="flex overflow-hidden rounded-3xl border bg-background shadow-sm transition hover:shadow-md focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:outline-none md:hidden"
     >
-      <div className="relative min-h-[200px] flex-1 bg-muted/40">
+      <div className="relative aspect-square min-h-[150px] flex-1 bg-muted/40">
         {article.cover ? (
           <Image
             src={article.cover.url}
@@ -292,7 +281,7 @@ function MobileInsightCard({ article }: { article: InsightArticle }) {
           </div>
         )}
       </div>
-      <div className="flex flex-1 flex-col gap-3 p-5">
+      <div className="flex flex-[2] flex-col gap-3 p-5">
         <div className="flex items-center gap-2 text-xs tracking-wide text-muted-foreground uppercase">
           {/* {article.categoryName && (
             <span className="font-semibold text-primary">
