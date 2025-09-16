@@ -1,9 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import qs from "qs";
-//
 
-const STRAPI_URL:string =
+const STRAPI_URL: string =
   process.env.NEXT_PUBLIC_STRAPI_URL || "http://127.0.0.1:1337";
 
 type StrapiImageFormat = {
@@ -168,7 +167,8 @@ async function getInsights(): Promise<InsightArticle[]> {
   }
 
   const json = (await res.json()) as StrapiArticleResponse;
-
+  // TODO delete after debugging
+  console.log(JSON.stringify(json));
   return (json.data ?? []).map((item) => {
     const cover = resolveMedia(item.attributes?.cover);
     const authorAttributes = item.attributes?.author?.data?.attributes;
@@ -202,15 +202,14 @@ async function getInsights(): Promise<InsightArticle[]> {
 
 function DesktopInsightCard({ article }: { article: InsightArticle }) {
   return (
-    <article className="hidden gap-6 overflow-hidden rounded-3xl border bg-background shadow-sm transition focus-within:ring-2 focus-within:ring-primary/40 hover:shadow-md md:grid">
-      {/* Article Cover */}
-      <div className="relative border-r bg-muted/40">
+    <article className="hidden overflow-hidden rounded-3xl border bg-background shadow-sm transition focus-within:ring-2 focus-within:ring-primary/40 hover:shadow-md md:grid md:grid-rows-2">
+      <div className="relative min-h-[220px] border-r bg-muted/40">
         {article.cover ? (
           <Image
             src={article.cover.url}
             alt={article.cover.alt || article.title}
             fill
-            sizes="(min-width: 768px) 240px"
+            sizes="(min-width: 768px) 50vw"
             className="object-cover"
           />
         ) : (
@@ -220,47 +219,47 @@ function DesktopInsightCard({ article }: { article: InsightArticle }) {
         )}
       </div>
       {/* Author Info: avatar | (name over (published + category)) */}
-      <div className="flex items-center gap-3 p-6 pt-4 text-sm text-muted-foreground">
-        {/* Author Avatar */}
-        {article.author.avatar ? (
-          <Image
-            src={article.author.avatar.url}
-            alt={article.author.avatar.alt || `${article.author.name} avatar`}
-            width={48}
-            height={48}
-            className="h-12 w-12 rounded-full object-cover"
-          />
-        ) : (
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted text-base font-semibold text-muted-foreground">
-            {getInitials(article.author.name)}
-          </div>
-        )}
-        <div className="flex flex-col text-left leading-tight">
-          <span className="font-medium text-foreground">
-            {article.author.name}
-          </span>
-          {/* Article published time */}
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            {article.published.iso ? (
-              <time dateTime={article.published.iso}>
-                {article.published.label}
-              </time>
-            ) : (
-              // <span>{article.published.label}</span>
-              <span>{"Jul 16, 2024"}</span>
-            )}
-            {/* Article category name */}
-            {article.categoryName && (
-              <>
-                <span aria-hidden>|</span>
-                <span>{article.categoryName}</span>
-              </>
-            )}
+      <div className="flex flex-col gap-6 p-6">
+        <div className="flex items-center gap-3 text-sm text-muted-foreground">
+          {/* Author Avatar */}
+          {article.author.avatar ? (
+            <Image
+              src={article.author.avatar.url}
+              alt={article.author.avatar.alt || `${article.author.name} avatar`}
+              width={48}
+              height={48}
+              className="h-12 w-12 rounded-full object-cover"
+            />
+          ) : (
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted text-base font-semibold text-muted-foreground">
+              {getInitials(article.author.name)}
+            </div>
+          )}
+          <div className="flex flex-col text-left leading-tight">
+            <span className="font-medium text-foreground">
+              {article.author.name}
+            </span>
+            {/* Article published time */}
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              {article.published.iso ? (
+                <time dateTime={article.published.iso}>
+                  {article.published.label}
+                </time>
+              ) : (
+                // <span>{article.published.label}</span>
+                <span>{"Jul 16, 2024"}</span>
+              )}
+              {/* Article category name */}
+              {article.categoryName && (
+                <>
+                  <span aria-hidden>|</span>
+                  <span>{article.categoryName}</span>
+                </>
+              )}
+            </div>
           </div>
         </div>
-      </div>
-      {/* Article Details */}
-      <div className="flex flex-col gap-4 p-6">
+        {/* Article Details (title & Link) */}
         <Link
           href={`/articles/${article.slug}`}
           className="text-2xl leading-tight font-semibold text-foreground transition hover:text-primary focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:outline-none"
@@ -278,13 +277,13 @@ function MobileInsightCard({ article }: { article: InsightArticle }) {
       href={`/insights/${article.slug}`}
       className="flex overflow-hidden rounded-3xl border bg-background shadow-sm transition hover:shadow-md focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:outline-none md:hidden"
     >
-      <div className="relative aspect-video bg-muted/40">
+      <div className="relative min-h-[200px] flex-1 bg-muted/40">
         {article.cover ? (
           <Image
             src={article.cover.url}
             alt={article.cover.alt || article.title}
             fill
-            sizes="100vw"
+            sizes="50vw"
             className="object-cover"
           />
         ) : (
@@ -293,7 +292,7 @@ function MobileInsightCard({ article }: { article: InsightArticle }) {
           </div>
         )}
       </div>
-      <div className="flex flex-col gap-3 p-5">
+      <div className="flex flex-1 flex-col gap-3 p-5">
         <div className="flex items-center gap-2 text-xs tracking-wide text-muted-foreground uppercase">
           {/* {article.categoryName && (
             <span className="font-semibold text-primary">
