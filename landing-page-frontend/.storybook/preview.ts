@@ -1,11 +1,13 @@
 import type { Preview } from '@storybook/nextjs-vite'
+// fix layout and style missing issue in Storybook
+import "../src/app/globals.css";
 
 const preview: Preview = {
   parameters: {
     controls: {
       matchers: {
-       color: /(background|color)$/i,
-       date: /Date$/i,
+        color: /(background|color)$/i,
+        date: /Date$/i,
       },
     },
 

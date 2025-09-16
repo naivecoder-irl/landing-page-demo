@@ -14,17 +14,17 @@ function getInitials(name: string) {
 }
 
 export default function DesktopInsightCard({
-  article,
+  insightPreview,
 }: {
-  article: InsightPreview;
+  insightPreview: InsightPreview;
 }) {
   return (
     <article className="hidden overflow-hidden rounded-3xl border bg-background shadow-sm transition focus-within:ring-2 focus-within:ring-primary/40 hover:shadow-md md:grid md:grid-rows-2">
       <div className="relative min-h-[220px] border-r bg-muted/40">
-        {article.coverImage ? (
+        {insightPreview.coverImage ? (
           <Image
-            src={article.coverImage.url}
-            alt={article.coverImage.alt || article.title}
+            src={insightPreview.coverImage.url}
+            alt={insightPreview.coverImage.alt || insightPreview.title}
             fill
             sizes="(min-width: 768px) 50vw"
             className="object-cover"
@@ -37,12 +37,12 @@ export default function DesktopInsightCard({
       </div>
       <div className="flex flex-col gap-6 p-6">
         <div className="flex items-center gap-3 text-sm text-muted-foreground">
-          {article.author.avatarImage ? (
+          {insightPreview.author.avatarImage ? (
             <Image
-              src={article.author.avatarImage.url}
+              src={insightPreview.author.avatarImage.url}
               alt={
-                article.author.avatarImage.alt ||
-                `${article.author.name} avatar`
+                insightPreview.author.avatarImage.alt ||
+                `${insightPreview.author.name} avatar`
               }
               width={48}
               height={48}
@@ -50,37 +50,37 @@ export default function DesktopInsightCard({
             />
           ) : (
             <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted text-base font-semibold text-muted-foreground">
-              {getInitials(article.author.name)}
+              {getInitials(insightPreview.author.name)}
             </div>
           )}
           <div className="flex flex-col text-left leading-tight">
             <span className="font-medium text-foreground">
-              {article.author.name}
+              {insightPreview.author.name}
             </span>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              {article.publishedAt.iso ? (
-                <time dateTime={article.publishedAt.iso}>
-                  {article.publishedAt.label}
+              {insightPreview.publishedAt.iso ? (
+                <time dateTime={insightPreview.publishedAt.iso}>
+                  {insightPreview.publishedAt.label}
                 </time>
               ) : (
                 <span>{"Jul 16, 2099"}</span>
               )}
-              {article.categoryName && (
+              {insightPreview.categoryName && (
                 <>
                   <span aria-hidden>|</span>
-                  <span>{article.categoryName}</span>
+                  <span>{insightPreview.categoryName}</span>
                 </>
               )}
             </div>
           </div>
         </div>
         <Link
-          href={`/insights/${article.documentId}`}
+          href={`/insights/${insightPreview.documentId}`}
           target="_blank"
           rel="noopener noreferrer"
           className="text-2xl leading-tight font-semibold text-foreground transition hover:text-primary focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:outline-none"
         >
-          {article.title}
+          {insightPreview.title}
         </Link>
       </div>
     </article>

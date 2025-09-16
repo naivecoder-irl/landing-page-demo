@@ -152,8 +152,8 @@ export default async function InsightCard() {
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {articles.map((article) => (
             <div key={article.id} className="w-full">
-              <DesktopInsightCard article={article} />
-              <MobileInsightCard article={article} />
+              <DesktopInsightCard insightPreview={article} />
+              <MobileInsightCard insightPreview={article} />
             </div>
           ))}
         </div>
