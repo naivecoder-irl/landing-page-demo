@@ -17,6 +17,17 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+
+import { toast } from "sonner";
+import { cn } from "@/lib/utils";
+
 const FormSchema = z.object({
   fullName: z
     .string()
@@ -30,48 +41,78 @@ const FormSchema = z.object({
 });
 
 type FormValues = z.infer<typeof FormSchema>;
+type SubmitState = "idle" | "loading" | "ok" | "error";
 
 export default function LeadForm() {
-  const [status, setStatus] = useState<"idle" | "loading" | "ok" | "error">(
-    "idle",
-  );
+  const [status, setStatus] = useState<SubmitState>("idle");
   const [msg, setMsg] = useState<string>("");
 
   const form = useForm<FormValues>({
     resolver: zodResolver(FormSchema),
     defaultValues: { fullName: "", email: "", phone: "" },
+    mode: "onBlur",
   });
 
   async function onSubmit(values: FormValues) {
     try {
       setStatus("loading");
       setMsg("");
+
       const res = await fetch("/api/form/submit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(values),
       });
-      const json = await res.json();
+
+      const json = (await res.json()) as unknown;
+
       if (!res.ok) {
+        const errMsg =
+          typeof json === "object" &&
+          json !== null &&
+          "error" in json &&
+          typeof (json as { error: unknown }).error === "string"
+            ? (json as { error: string }).error
+            : "Submit failed.";
         setStatus("error");
-        setMsg(json?.error ?? "Submit failed.");
+        setMsg(errMsg);
+        toast.error("Submission failed", { description: errMsg });
         return;
       }
+
+      const id =
+        typeof json === "object" &&
+        json !== null &&
+        "id" in json &&
+        typeof (json as { id: unknown }).id === "number"
+          ? String((json as { id: number }).id)
+          : "N/A";
+
       setStatus("ok");
-      setMsg(`Saved! Record ID: ${json.id ?? "N/A"}`);
-      form.reset();
+      setMsg(`Saved! Record ID: ${id}`);
+      toast.success("Submitted successfully", {
+        description: `Saved! Record ID: ${id}`,
+      });
+      form.reset({ fullName: "", email: "", phone: "" });
     } catch (e: unknown) {
       const message = e instanceof Error ? e.message : "Network error.";
       setStatus("error");
       setMsg(message);
+      toast.error("Submission error", { description: message });
     }
   }
 
   const submitting = status === "loading";
 
   return (
-    <div className="space-y-6">
-      <div className="space-y-2">
+    <Card className="border-muted/40 shadow-sm">
+      {/* <CardHeader className="space-y-1">
+        <CardTitle className="text-2xl">Get in touch</CardTitle>
+        <CardDescription>
+          Leave your contact and we will reach out.
+        </CardDescription>
+      </CardHeader> */}
+      <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
             <FormField
@@ -81,11 +122,12 @@ export default function LeadForm() {
                 <FormItem>
                   <FormLabel>Full Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Jane Doe" {...field} />
+                    <Input
+                      placeholder="Jane Doe"
+                      {...field}
+                      className={cn("h-11")}
+                    />
                   </FormControl>
-                  <FormDescription>
-                    Your legal or preferred full name.
-                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -102,11 +144,9 @@ export default function LeadForm() {
                       type="email"
                       placeholder="jane@example.com"
                       {...field}
+                      className={cn("h-11")}
                     />
                   </FormControl>
-                  <FormDescription>
-                    We will only use it to contact you.
-                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -123,9 +163,10 @@ export default function LeadForm() {
                       type="tel"
                       placeholder="+353 XX XXX XXXX"
                       {...field}
+                      className={cn("h-11")}
                     />
                   </FormControl>
-                  <FormDescription>Optional.</FormDescription>
+                  {/* <FormDescription>Optional.</FormDescription> */}
                   <FormMessage />
                 </FormItem>
               )}
@@ -134,29 +175,29 @@ export default function LeadForm() {
             <Button
               type="submit"
               size="lg"
-              className="text-base"
+              className="w-full"
               disabled={submitting}
+              aria-busy={submitting}
             >
               {submitting ? "Submitting…" : "Submit"}
             </Button>
 
-            {status !== "idle" && (
+            {/* Debugging part of submitted status */}
+            {/* {status !== "idle" && (
               <p
-                className={`text-sm ${
-                  status === "ok"
-                    ? "text-green-600"
-                    : status === "error"
-                      ? "text-red-600"
-                      : ""
-                }`}
+                className={cn(
+                  "text-sm",
+                  status === "ok" && "text-green-600",
+                  status === "error" && "text-red-600",
+                )}
                 aria-live="polite"
               >
                 {msg}
               </p>
-            )}
+            )} */}
           </form>
         </Form>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 }

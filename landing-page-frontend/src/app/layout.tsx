@@ -37,7 +37,7 @@ export default function RootLayout({
         >
           {children}
           {/* Sonner toaster */}
-          <Toaster />
+          <Toaster richColors closeButton position="top-center" />
         </ThemeProvider>
       </body>
     </html>
