@@ -1,7 +1,9 @@
 import { ArrowRight, Play } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+// import { Badge } from "@/components/ui/badge";
+
+import LeadForm from "@/components/lead-form";
 
 const STRAPI_URL =
   process.env.NEXT_PUBLIC_STRAPI_URL || "http://127.0.0.1:1337";
@@ -75,7 +77,8 @@ export default async function Hero() {
           </div>
         </div>
         {/* Right Column - Content */}
-        <div className="space-y-8">
+        <LeadForm />
+        {/* <div className="space-y-8">
           <div className="space-y-4">
             <h1 className="text-4xl font-bold tracking-tight md:text-6xl">
               <span className="text-primary">Landing Pages</span>
@@ -91,7 +94,7 @@ export default async function Hero() {
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </div>
-        </div>
+        </div>  */}
       </div>
     </section>
   );

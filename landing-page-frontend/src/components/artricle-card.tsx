@@ -5,13 +5,11 @@ import qs from "qs";
 const STRAPI_URL: string =
   process.env.NEXT_PUBLIC_STRAPI_URL || "http://127.0.0.1:1337";
 
-type StrapiImageFormat = (
-  {
-    url: string;
-    width?: number;
-    height?: number;
-  } & Record<string, unknown>
-);
+type StrapiImageFormat = {
+  url: string;
+  width?: number;
+  height?: number;
+} & Record<string, unknown>;
 
 type StrapiMedia =
   | ({
@@ -82,7 +80,8 @@ function resolveMedia(
   const url = format?.url ?? media.url;
   const width = format?.width ?? media.width ?? 800;
   const height = format?.height ?? media.height ?? 600;
-  const alt = typeof media.alternativeText === "string" ? media.alternativeText : "";
+  const alt =
+    typeof media.alternativeText === "string" ? media.alternativeText : "";
 
   return {
     url: url.startsWith("http") ? url : `${STRAPI_URL}${url}`,
@@ -161,6 +160,10 @@ async function getInsights(): Promise<InsightArticle[]> {
   }
 
   const json = (await res.json()) as StrapiArticleResponse;
+
+  // TODO delete after debugging
+  console.log(json);
+
   return (json.data ?? []).map((item) => {
     const cover = resolveMedia(item.cover);
     const author = item.author ?? null;
