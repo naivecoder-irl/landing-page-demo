@@ -1,6 +1,6 @@
 import Hero from "@/components/hero";
 
-import InsightCard from "@/components/insight-card";
+import InsightCard from "@/components/insight/insight-card";
 import Footer from "@/components/footer";
 import Navbar from "@/components/navbar";
 

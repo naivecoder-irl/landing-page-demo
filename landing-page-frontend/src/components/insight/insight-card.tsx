@@ -78,8 +78,9 @@ async function getInsights(): Promise<InsightPreview[]> {
           },
         },
       },
+      // hard-coded pagination for demo
       pagination: {
-        pageSize: 6,
+        pageSize: 20,
       },
     },
     {
