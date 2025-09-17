@@ -90,7 +90,83 @@ Username: test@test.com
 Password: Landing-page-2025
 ```
 
-You will then see the Strapi CMS interface with preloaded schema and data.
+You will then see the Strapi CMS interface.
+
+#### Importing Public Assets
+
+In addition to the database backup, sample **media assets** are stored in `backup/public.zip`.
+These need to be extracted into the Strapi's `public` folder so that images and uploads are available.
+
+Navigate to backend folder:
+
+```bash
+cd landing-page-demo/landing-page-backend
+```
+
+**Unzip the backup** into the `public/` folder, overwriting existing files:
+
+```bash
+unzip -o ../backup/public.zip -d ./public
+```
+
+On Windows (PowerShell), you can use:
+
+```powershell
+Expand-Archive -Force ../backup/public.zip ./public
+```
+
+Then restart Strapi
+
+```bash
+npm run develop
+```
+
+You can verify by checking the Strapi's Media Library:
+
+`http://127.0.0.1:1337/admin/plugins/upload`
+
+#### Troubleshooting: Error 426 on Port 1337
+
+If you encounter an error page like:
+
+```
+Error 426 - This page isn't working
+```
+
+it usually means that **port 1337 is already occupied**.
+
+- On **Windows**, port `1337` is often blocked by background services such as **Razer products (e.g., `RzSDKServer`)**, which keep the port in use.
+- Reference: [Strapi issue #12414](https://github.com/strapi/strapi/issues/12414)
+
+**Solution:**
+
+1. Check which process is using port 1337.
+
+   - On Linux/macOS:
+
+     ```shell
+     lsof -i:1337
+     ```
+
+   - On Windows PowerShell:
+
+     ```shell
+     netstat -ano | findstr :1337
+     ```
+
+2. Kill the conflicting process (or stop the Razer service).
+
+3. Restart Strapi with:
+
+   ```
+   npm run develop
+   ```
+
+If the port remains unavailable, you can also run Strapi on a different port in `landing-page-backend/.env`:
+
+```shell
+PORT=1338
+```
 
 #### Why not use Strapi import/export?
 
@@ -107,19 +183,67 @@ npm run strapi import -- -f /backup/landing-page-data-export.tar
 Import process failed.
 ```
 
-As a workaround, this project uses a **direct copy of the SQLite database** (`data.db`) for backup and restore in development.
-
+As a workaround, this project uses a **direct copy of the SQLite database** (`data.db`) and **resource public folder** for backup and restore in development.
 
 ### Grist
 
-Install Docker
+Grist runs via Docker from `/landing-page-demo/landing-page-grist`, use the `${PWD}` form so it works in Linux/macOS shells and Windows PowerShell.
 
-Grist runs via Docker. Navigate to `/landing-page-demo/landing-page-grist`:
+#### Pull image
+
+```bash
+docker pull gristlabs/grist
+```
+
+#### Run container (Linux/macOS **or** Windows PowerShell)
+
+```bash
+docker run -d --name=grist -p 8484:8484 -v ${PWD}/persist:/persist -it gristlabs/grist
+```
+
+Notes:
+
+- `${PWD}` resolves to the current directory in **bash/zsh** and **PowerShell**.
+- On **Linux/macOS and Windows**, the `${PWD}` value may resolve differently depending on whether you run the command inside the `landing-page-grist` folder or from the root project folder. Please **confirm the actual host path** of the mounted `persist/` directory yourself, and make sure to unpack the backup (`grist-persist.zip`) into that exact folder so the container can read it correctly.
+
+#### Unpack `grist-persist.zip` to the host `persist/` folder
+
+Overwrite the mounted `persist` directory with decompressed `grist-persist.zip`
+
+**Linux/macOS**
 
 ```shell
-docker pull gristlabs/grist
+# From /landing-page-demo/landing-page-grist
+unzip -o ../backup/grist-persist.zip -d ./persist
+```
 
-docker run -d --name=grist -p 8484:8484 -v $PWD/persist:/persist -it gristlabs/grist
+**Windows PowerShell**
+
+```shell
+# From /landing-page-demo/landing-page-grist
+Expand-Archive -Force ../backup/grist-persist.zip ./persist
+```
+
+If the container is already running, you can keep it running. Docker bind mounts reflect changes instantly. If you prefer, you can stop it first:
+
+```shell
+docker stop grist
+# unpack files...
+docker start grist
+```
+
+#### Launch & access
+
+If you haven’t started the container yet, start it:
+
+```bash
+docker start grist
+```
+
+Open Grist at:
+
+```bash
+http://127.0.0.1:8484/
 ```
 
 Access the portal at `http://127.0.0.1:8484/` and click **Sign In** (top right):
@@ -134,7 +258,7 @@ Inside it, open the `Users` table and click **Raw Data** (bottom left) to confir
 
 The **Document ID** is shown in the URL after `/docs/`.
 
-Generate an **API key** in Profile Settings (`http://127.0.0.1:8484/o/docs/account`) and save.
+Generate and copy the **API key** in Profile Settings (`http://127.0.0.1:8484/o/docs/account`) and save.
 
 <img src="./README.assets/grist_profile.jpg" alt="grist_profile" style="zoom:50%;" />
 
