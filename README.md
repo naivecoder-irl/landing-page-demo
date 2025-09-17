@@ -41,58 +41,60 @@ This is a modern full-stack application with a clear separation of concerns:
 
 ## Deployment Process
 
-Using `Node.js` v20.13.1 and `Docker`
-
+The project runs locally using **Node.js v20.13.1** and **Docker**.
+It consists of three main parts: **Strapi CMS**, **Grist**, and **Next.js (with Storybook)**.
 
 ### Strapi CMS
 
-Under the `/landing-page-demo/landing-page-backend`, execute command:
+#### Install Dependencies
 
-```shell
-> npm install
-> npm run develop
+Navigate to `/landing-page-demo/landing-page-backend` and install dependencies:
 
+```
+npm install
+npm run develop
+```
 
+Once Strapi starts, you should see:
+
+```
 Welcome back!
 To access the server ⚡️, go to:
 http://localhost:1337
 ```
 
-You will see the following prompt:
+You will see the initial setup screen in the browser:
 
 <img src="./README.assets/strapi_register.jpg" alt="strapi_register" style="zoom: 33%;" />
 
-Then stop the strapi runtime, 
+#### Importing Sample Data
 
-execute the following command to import testing data:
+Stop the Strapi process, then import the testing database:
 
 ```shell
 cp ./backup/data.db ./.tmp/data.db
 ```
 
-If you are in Windows environment, you can manually create `.tmp` folder, then copy `data.db` in `backup` folder and paste it to `.tmp`
+If you are on Windows environment, you can manually create `.tmp` folder and copy `data.db` from the `backup` folder into it.
 
-Execute `npm run develop` again, 
-
-Then access `http://127.0.0.1:1337`
-
-login with:
+Restart Strapi:
 
 ```shell
-Username:
-
-test@test.com
-
-Password:
-
-Landing-page-2025
+npm run develop
 ```
 
-You will see the Strapi CMS, schema, data etc.
+Access `http://127.0.0.1:1337` and log in with:
 
+```shell
+Username: test@test.com
+Password: Landing-page-2025
+```
 
+You will then see the Strapi CMS interface with preloaded schema and data.
 
-Due to the damage of official export/import method (https://docs.strapi.io/cms/data-management/import):
+#### Why not use Strapi import/export?
+
+Strapi’s official import/export method (https://docs.strapi.io/cms/data-management/import) is currently broken:
 
 ```shell
 npm run strapi import -- -f /backup/landing-page-data-export.tar
@@ -105,14 +107,14 @@ npm run strapi import -- -f /backup/landing-page-data-export.tar
 Import process failed.
 ```
 
-I choose to hard copy the sqlite database file to make data backup & restore under the development environment.
+As a workaround, this project uses a **direct copy of the SQLite database** (`data.db`) for backup and restore in development.
 
 
 ### Grist
 
 Install Docker
 
-Under directory `/landing-page-demo/landing-page-grist`
+Grist runs via Docker. Navigate to `/landing-page-demo/landing-page-grist`:
 
 ```shell
 docker pull gristlabs/grist
@@ -120,32 +122,37 @@ docker pull gristlabs/grist
 docker run -d --name=grist -p 8484:8484 -v $PWD/persist:/persist -it gristlabs/grist
 ```
 
-Then access `http://127.0.0.1:8484/`, 
+Access the portal at `http://127.0.0.1:8484/` and click **Sign In** (top right):
 
 click `Sign In` on the upper right
 
 <img src="./README.assets/grist_signin.jpg" alt="grist_signin" style="zoom:50%;" />
 
-You will see the workspace named `Home` on the left, inside the `Home`, there is a table named `Users`, then click `Raw Data` in the bottom left corner of the page, ensuring the `TABLE ID` is the same as defined in environment variables. 
+You will see the default **Home** workspace.
 
-Also, you would get the document identifier from URL after `/docs`
+Inside it, open the `Users` table and click **Raw Data** (bottom left) to confirm the **Table ID**.
 
-The API key can be obtained from Profile Settings `http://127.0.0.1:8484/o/docs/account`
+The **Document ID** is shown in the URL after `/docs/`.
+
+Generate an **API key** in Profile Settings (`http://127.0.0.1:8484/o/docs/account`) and save.
 
 <img src="./README.assets/grist_profile.jpg" alt="grist_profile" style="zoom:50%;" />
 
-Please make sure that the name is the same as environment variables `/landing-page-frontend/.env.development.local` in Nextjs Project 
+#### Environment Variables
+
+Configure Grist in the Next.js frontend at `/landing-page-frontend/.env.development.local`:
+
 ```shell
 # Grist self-hosted instance
 GRIST_BASE_URL=http://127.0.0.1:8484
 
-# API key generated in Grist user settings
+# API key from Profile Settings
 GRIST_API_KEY=<local-api-key>
 
 # Document identifier (from the Grist URL after /docs/)
 GRIST_DOC_ID=dsfNgFftiM1A
 
-# Table identifier within the document (from Raw Data view)
+# Table identifier (from Raw Data view)
 GRIST_TABLE_ID=Users
 
 ```
@@ -156,7 +163,7 @@ GRIST_TABLE_ID=Users
 
 #### Nextjs Frontend
 
-Under the `/landing-page-demo/landing-page-frontend`, execute command:
+Navigate to `/landing-page-demo/landing-page-frontend`:
 
 ```shell
 > npm install
@@ -174,7 +181,7 @@ Under the `/landing-page-demo/landing-page-frontend`, execute command:
  ✓ Starting...
 ```
 
-Then you can access `http://127.0.0.1:3000/` to access the landing page.
+Access `http://127.0.0.1:3000/` to view the landing page:
 
 <img src="./README.assets/landing_1.jpg" alt="landing_1" style="zoom:25%;" />
 
@@ -182,11 +189,10 @@ Then you can access `http://127.0.0.1:3000/` to access the landing page.
 
 #### Storybook
 
-Under the `/landing-page-demo/landing-page-frontend`, 
+Navigate to `/landing-page-demo/landing-page-frontend`:
 
-after `npm install`,
+After installing dependencies, run:
 
-execute:
 ```shell
 ❯ npm run storybook
 
@@ -196,7 +202,7 @@ execute:
 storybook v9.1.5
 ```
 
-The you can access `http://127.0.0.1:6006` to access the Storybook page to view and manage stories.
+Access `http://127.0.0.1:6006` to access the Storybook UI and browse component stories:
 
 <img src="./README.assets/storybook.jpg" alt="storybook" style="zoom: 25%;" />
 
