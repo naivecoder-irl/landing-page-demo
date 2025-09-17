@@ -27,6 +27,14 @@ const footerLinks = [
       { label: "Contact", href: "#contact" },
     ],
   },
+  {
+    title: "Resources",
+    links: [
+      { label: "Blog", href: "#blog" },
+      { label: "Guides", href: "#guides" },
+      { label: "Status", href: "#status" },
+    ],
+  },
 ];
 
 export default function Footer() {
@@ -34,7 +42,7 @@ export default function Footer() {
     <footer className="border-t bg-background">
       <div className="mx-auto max-w-7xl min-w-[360px] px-4 py-8">
         {/* Main Footer Content */}
-        <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
+        <div className="grid grid-cols-2 gap-8 md:grid-cols-5">
           {/* Company Info */}
           <div className="col-span-2 md:col-span-1">
             <h3 className="mb-4 text-lg font-semibold">Landing Page Inc.</h3>
@@ -86,8 +94,8 @@ export default function Footer() {
           ))}
         </div>
 
-        <Separator className="my-8" />
-
+        {/* <Separator className="my-8" /> */}
+        <div className="my-8" />
         {/* Bottom Footer */}
         <div className="flex flex-col items-center justify-between md:flex-row">
           <p className="text-sm text-muted-foreground">

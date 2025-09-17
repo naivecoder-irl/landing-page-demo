@@ -1,5 +1,6 @@
 import type { Preview } from '@storybook/nextjs-vite'
 // fix layout and style missing issue in Storybook
+// Reference: https://storybook.js.org/recipes/tailwindcss
 import "../src/app/globals.css";
 
 const preview: Preview = {
