@@ -170,15 +170,32 @@ You can verify by checking the Strapi's Media Library:
 
 `http://127.0.0.1:1337/admin/plugins/upload`
 
-#### Troubleshooting: Error 426 on Port 1337
+#### Configure Public API Permissions
 
-If you encounter an error page like:
+By default, Strapi restricts unauthenticated access to API routes. To allow the frontend to fetch **Insights(Articles)** and the **Cover**, you need to update the **Public** role:
+
+1. In the Strapi Admin Panel, go to:
+    **Settings → Users & Permissions Plugin → Roles → Public**
+2. Scroll through the list of available permissions.
+3. Enable the following:
+   - **Article** content type
+     - `find` (GET list of articles)
+     -  `findOne` (GET single article by ID)
+   - **Cover** content type
+     - `find` (GET list of covers)
+4. Save the changes.
+
+Now the frontend (Next.js) can successfully call Strapi’s `/api/articles` and `/api/cover` endpoints.
+
+#### Troubleshooting: HTTP status code 426 on Port 1337
+
+If you encounter an HTTP error like:
 
 ```
-Error 426 - This page isn't working
+426 Upgrade Required
 ```
 
-it usually means that **port 1337 is already occupied**.
+it usually means that Strapi's **default port 1337 is already occupied**.
 
 - On **Windows**, port `1337` is often blocked by background services such as **Razer products (e.g., `RzSDKServer`)**, which keep the port in use.
 - Reference: [Strapi issue #12414](https://github.com/strapi/strapi/issues/12414)
