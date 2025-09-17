@@ -1,43 +1,88 @@
 # landing-page-demo
 
-This project is a demo of building responsive landing page
+This project is a **demo of building a responsive landing page** with a modern full-stack architecture, integrating **Next.js**, **Strapi CMS**, and **Grist**.
+
+---
+
+## Prerequisites
+
+- **Node.js** v20.13.1 (works with Node.js 20.x – 22.x)
+- **npm** package manager
+- **Docker** (required for Grist)
+
+---
 
 ## Project Architecture Overview
 
 This is a modern full-stack application with a clear separation of concerns:
 
+- **Frontend**: Next.js 15 with Tailwind CSS and shadcn/ui
+- **Backend CMS**: Strapi v5 for content schema & article management
+- **Database**: SQLite (bundled with Strapi) & Grist (relational spreadsheet-database)
+- **UI Dev & Testing**: Storybook for component previews and visual testing
+
+---
+
 ### Project Structure
 
 ```shell
-
+landing-page-demo/
+├── landing-page-frontend/   # Next.js 15 frontend (Tailwind v4, shadcn/ui, Storybook)
+├── landing-page-backend/    # Strapi CMS backend with sample schema & content
+├── landing-page-grist/      # Docker-ready Grist instance
+└── README.assets/           # Screenshots & documentation images
+└── README.md                # Detailed technical design & local deployment notes
 ```
+
+---
 
 ## Tech Stack
 
-### Frontend Technologies
+### Frontend
 
 - **Framework**: [Next.js 15.5.3](https://nextjs.org/) with App Router
 - **Language**: [TypeScript](https://www.typescriptlang.org/) (strict mode enabled)
 - **Styling**: [Tailwind CSS v4](https://tailwindcss.com/) with modern utilities
 - **UI Components**: [shadcn/ui](https://ui.shadcn.com/) built on Radix UI primitives
-- **Forms**: Server Actions with [Zod](https://zod.dev/) validation
+- **Forms**: react-hook-form + [Zod](https://zod.dev/)
+- **State Management**: React Server Components (RSC)
 
-### Backend Technologies
+### Backend
 
 - **CMS**: Strapi v5 headless content management
-- **Database**: Grist for form data storage
-- **Authentication**: JWT-based authentication system
-- **API**: REST API by Strapi
+- **Database**: SQLite & Grist (relational spreadsheet-database)
+- **API**: REST API exposed by Strapi
 
 ### Development & Quality Tools
 
 - **Storybook**: UI development tool to build and test reusable components
 - **Linting**: ESLint with Next.js and TypeScript configurations
 - **Code Quality**: TypeScript strict mode for enhanced type safety
-- **Error Handling**: Centralized error management with boundaries
-- **State Management**: React Server Components with server state
 
+## Environment Variables
 
+### Frontend (`/landing-page-frontend/.env.development.local`)
+
+```shell
+NEXT_PUBLIC_STRAPI_URL=http://127.0.0.1:1337
+GRIST_BASE_URL=http://127.0.0.1:8484
+GRIST_API_KEY=<local-api-key>
+GRIST_DOC_ID="dsfNgFftiM1A"
+GRIST_TABLE_ID="Users"
+```
+
+### Backend (`/landing-page-backend/.env`)
+
+```shell
+APP_KEYS=...
+API_TOKEN_SALT=...
+JWT_SECRET=...
+DATABASE_CLIENT=sqlite
+DATABASE_FILENAME=.tmp/data.db
+...
+```
+
+---
 
 ## Deployment Process
 
@@ -364,11 +409,13 @@ Inside the Grist document (`landing`), a table named **Users** is created with t
 | `email`    | Text | User’s email address                |
 | `phone`    | Text | Optional phone number               |
 
-#### API Usage & Data Flow
+#### Grist API Usage & Data Flow
 
-Form submissions from the Next.js frontend are sent to the backend route handler (`/api/form/submit`). 
-
-The handler calls the Grist API:
+1. **User fills form** on the landing page (`Hero` → `LeadForm`).
+2. **Next.js API route** (`/api/form/submit`) validates input with `zod`.
+3. **Server-side fetch** sends the record to Grist via REST API.
+4. **Grist stores** the new record in the **Users** table.
+5. **Response returned** to frontend → success/error notification via **Sonner**
 
 **Endpoint**
 
@@ -409,19 +456,12 @@ POST {GRIST_BASE_URL}/api/docs/{GRIST_DOC_ID}/tables/{GRIST_TABLE_ID}/records
 }
 ```
 
-1. **User fills form** on the landing page (`Hero` component → `LeadForm`).
-2. **Next.js API route** (`/api/form/submit`) validates input with `zod`.
-3. **Server-side fetch** sends the record to Grist via REST API.
-4. **Grist stores** the new record in the **Users** table.
-5. **Response returned** to frontend. Success or error notification shown with Sonner.
+---
 
+## References
 
-
-
-
-## Reference
-
-- Storybook: https://storybook.js.org/
-- Grist: https://github.com/gristlabs/grist-core
-- Next.js: https://nextjs.org/docs
-- Shadcn UI Landing Page Template: https://github.com/akash3444/shadcn-ui-landing-page/tree/tailwind-v4
+- [Next.js Documentation](https://nextjs.org/docs)
+- [Strapi Documentation](https://docs.strapi.io/)
+- [Grist Core](https://github.com/gristlabs/grist-core?utm_source=chatgpt.com)
+- [Storybook](https://storybook.js.org/)
+- [shadcn/ui Landing Page Template](https://github.com/akash3444/shadcn-ui-landing-page/tree/tailwind-v4)
