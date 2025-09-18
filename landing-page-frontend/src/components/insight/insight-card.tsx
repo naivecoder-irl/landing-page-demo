@@ -98,8 +98,7 @@ async function getInsights(): Promise<InsightPreview[]> {
 
   const json = (await res.json()) as StrapiArticlesResponse;
 
-  // TODO delete after debugging
-  console.log(json);
+  // console.log(json);
 
   return (json.data ?? []).map((item) => {
     const coverImage = resolveMedia(item.cover);
